@@ -1,8 +1,8 @@
 {
   "name": "angular-full-stack",
   "version": "21.1.2",
-  "license": "",
-  "author": "",
+  "license": "MIT",
+  "author": "Davide Violante",
   "description": "Angular Full Stack project built using Angular, Express, Mongoose and Node.",
   "engines": {
     "node": ">=24",
