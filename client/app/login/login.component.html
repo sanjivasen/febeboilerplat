@@ -3,22 +3,22 @@
 <div class="card">
   <h4 class="card-header">Login</h4>
   <div class="card-body">
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
-      <div class="input-group" [ngClass]="setClassEmail()">
+    <form [formRoot]="loginForm" (submit)="login()">
+      <div class="input-group" [class.has-danger]="emailInvalid()">
         <span class="input-group-text">
           <i class="fa fa-envelope"></i>
         </span>
-        <input class="form-control" type="email" name="email"
-               formControlName="email" placeholder="Email" autocomplete="email">
+        <input class="form-control" type="email"
+               [formField]="loginForm.email" placeholder="Email" autocomplete="email">
       </div>
-      <div class="input-group" [ngClass]="setClassPassword()">
+      <div class="input-group" [class.has-danger]="passwordInvalid()">
         <span class="input-group-text">
           <i class="fa fa-key"></i>
         </span>
-        <input class="form-control" type="password" name="password"
-               formControlName="password" placeholder="Password" autocomplete="current-password">
+        <input class="form-control" type="password"
+               [formField]="loginForm.password" placeholder="Password" autocomplete="current-password">
       </div>
-      <button class="btn btn-primary" type="submit" [disabled]="!loginForm.valid">
+      <button class="btn btn-primary" type="submit" [disabled]="!loginForm().valid()">
         <i class="fa fa-sign-in"></i> Login
       </button>
     </form>

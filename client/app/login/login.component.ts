@@ -1,43 +1,43 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  ReactiveFormsModule,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+  form,
+  FormField,
+  FormRoot,
+  required,
+  email,
+  minLength,
+  maxLength,
+} from '@angular/forms/signals';
 
 import { AuthService } from '../services/auth.service';
 import { ToastComponent } from '../shared/toast/toast.component';
+
+interface LoginModel {
+  email: string;
+  password: string;
+}
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule, ToastComponent],
+  imports: [FormField, FormRoot, ToastComponent],
 })
 export class LoginComponent implements OnInit {
   private auth = inject(AuthService);
-  private formBuilder = inject(UntypedFormBuilder);
   private router = inject(Router);
 
-  loginForm: UntypedFormGroup;
-  email = new UntypedFormControl('', [
-    Validators.email,
-    Validators.required,
-    Validators.minLength(3),
-    Validators.maxLength(100),
-  ]);
-  password = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
+  private model = signal<LoginModel>({ email: '', password: '' });
 
-  constructor() {
-    this.loginForm = this.formBuilder.group({
-      email: this.email,
-      password: this.password,
-    });
-  }
+  loginForm = form(this.model, (loginForm) => {
+    required(loginForm.email);
+    email(loginForm.email);
+    minLength(loginForm.email, 3);
+    maxLength(loginForm.email, 100);
+    required(loginForm.password);
+    minLength(loginForm.password, 6);
+  });
 
   ngOnInit(): void {
     if (this.auth.loggedIn()) {
@@ -45,15 +45,17 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  setClassEmail(): object {
-    return { 'has-danger': !this.email.pristine && !this.email.valid };
+  emailInvalid(): boolean {
+    const email = this.loginForm.email();
+    return email.touched() && !email.valid();
   }
 
-  setClassPassword(): object {
-    return { 'has-danger': !this.password.pristine && !this.password.valid };
+  passwordInvalid(): boolean {
+    const password = this.loginForm.password();
+    return password.touched() && !password.valid();
   }
 
   login(): void {
-    this.auth.login(this.loginForm.value);
+    this.auth.login(this.loginForm().value());
   }
 }

@@ -1,7 +1,5 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, UntypedFormBuilder, ReactiveFormsModule } from '@angular/forms';
-
 import { ToastService } from '../shared/toast/toast.service';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
@@ -20,9 +18,8 @@ describe('Component: Login', () => {
 
   beforeEach(async() => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, FormsModule, ReactiveFormsModule],
+      imports: [LoginComponent],
       providers: [
-        UntypedFormBuilder,
         ToastService,
         UserService,
         { provide: AuthService, useClass: AuthServiceMock },
